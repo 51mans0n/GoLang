@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+h1 {
+    position: relative;
+    margin: 100px auto auto auto;
+}
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://png.pngtree.com/thumb_back/fw800/background/20190828/pngtree-beautiful-acoustic-guitar-background-image_307744.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+.branding {
+    margin-right: 200px;
+}
+.branding h1 {
+    color: white;
+    font-size: 4.8em;
+    margin-bottom: 5px;
+}
+.branding p {
+    color: #FFF7AB;
+    font-size: 1.2em;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 900px;
+    margin: 150px 0 auto 150px;
+    text-align: center;
+    align-items: center;
+    padding: 0 200px;
+}
+
+form {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-left: 50px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+input[type=email], input[type=password], input[type=text] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #C0C0C0;
+    border-radius: 5px;
+    outline: none;
+}
+
+button {
+    width: calc(100% - 20px);
+    padding: 10px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+a {
+    color: #5cb85c;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+a:hover {
+    color: #338D33;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border: 2px solid #59BF59;
+}
+

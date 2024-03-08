@@ -1,0 +1,14 @@
+Table users {
+  id serial [pk]
+  name text
+  email text [unique]
+  password_hash text
+}
+
+Table tasks {
+  id serial [pk]
+  title text
+  description text
+  status text
+  user_id integer [ref: > users.id]
+}

@@ -79,21 +79,21 @@ API endpoints:
       "description": "Task description",
       "status": "new"
     }
-	```
+  ```
 
   Getting a list of tasks:
   ```
     GET /tasks
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
-	```
+  ```
 
   Deleting a task:
   ```
     DELETE /tasks/{id}
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
-	```
+  ```
 
   Getting a list of users:
   ```

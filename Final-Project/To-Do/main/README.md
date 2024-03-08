@@ -57,6 +57,7 @@ API endpoints:
     }
 
   Authentication and receipt of JWT token:
+  ```
     POST /login
     Content-Type: application/json
 
@@ -64,7 +65,7 @@ API endpoints:
       "email": "john@example.com",
       "password": "password123"
     }
-
+  ```
   Create a new task:
     POST /tasks
     Content-Type: application/json

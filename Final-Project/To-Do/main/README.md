@@ -47,6 +47,7 @@ API endpoints:
 
 ### Example requests:
   Creating a new user:
+  ```
     POST /users
     Content-Type: application/json
 
@@ -55,6 +56,7 @@ API endpoints:
       "email": "john@example.com",
       "password": "password123"
     }
+  ```
 
   Authentication and receipt of JWT token:
   ```
@@ -67,6 +69,7 @@ API endpoints:
     }
   ```
   Create a new task:
+  ```
     POST /tasks
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
@@ -76,28 +79,37 @@ API endpoints:
       "description": "Task description",
       "status": "new"
     }
+	```
 
   Getting a list of tasks:
+  ```
     GET /tasks
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
+	```
 
   Deleting a task:
+  ```
     DELETE /tasks/{id}
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
+	```
 
   Getting a list of users:
+  ```
     GET /users
     Content-Type: application/json
+  ```
 
   Deleting a user:
+  ```
     DELETE /users/{id}
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
+  ```
     
 ### License:
-  Skorokhod Maxim Andreevich 22B030614
-  Zhunisov Ernur Erboluly 22B030365
+- Skorokhod Maxim Andreevich 22B030614
+- Zhunisov Ernur Erboluly 22B030365
 
 

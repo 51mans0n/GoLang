@@ -45,7 +45,7 @@ API endpoints:
     GET /tasks — getting a list of all user tasks (requires a JWT token in the Authorization header).
     DELETE /tasks/{id} — deleting a task by ID (requires a JWT token in the Authorization header).
 
-Example requests:
+### Example requests:
   Creating a new user:
     POST /users
     Content-Type: application/json
@@ -95,7 +95,7 @@ Example requests:
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
     
-License:
+### License:
   Skorokhod Maxim Andreevich 22B030614
   Zhunisov Ernur Erboluly 22B030365
 

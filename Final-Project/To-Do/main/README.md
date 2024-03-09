@@ -1,6 +1,6 @@
 # To-Do list api
 
-A simple RESTful API for task management. Allows you to create, delete users, create tasks for users, show lists of tasks and delete users or tasks.
+A simple RESTful API for task management. Allows you to create, delete users, create, update tasks for users, show lists of tasks and delete users or tasks.
 
 ## Beginning of work
 
@@ -44,6 +44,7 @@ API endpoints:
     POST /tasks — creating a new task (requires a JWT token in the Authorization header).
     GET /tasks — getting a list of all user tasks (requires a JWT token in the Authorization header).
     DELETE /tasks/{id} — deleting a task by ID (requires a JWT token in the Authorization header).
+	PUT /tasks/{id} — updating a task by ID (requires a JWT token in the Authorization header). 
 
 ### Example requests:
   Creating a new user:
@@ -93,6 +94,19 @@ API endpoints:
     DELETE /tasks/{id}
     Content-Type: application/json
     Authorization: Bearer <your_jwt_token>
+  ```
+  
+  Updating a task:
+  ```
+    PUT /tasks/{id}
+    Content-Type: application/json
+    Authorization: Bearer <your_jwt_token>
+	
+	{
+    "title": "new title",
+    "description": "new description",
+    "status": "changed status"
+    }
   ```
 
   Getting a list of users:

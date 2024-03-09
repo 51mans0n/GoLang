@@ -16,7 +16,7 @@ const (
 	dbname   = "postgres"
 )
 
-// Функция для подключения к базе данных
+// Function for connecting to a database
 func connectDB() *sql.DB {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",

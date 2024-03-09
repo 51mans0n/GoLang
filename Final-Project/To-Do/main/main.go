@@ -29,17 +29,18 @@ func main() {
 	r.HandleFunc("/tasks", createTask).Methods("POST")
 	r.HandleFunc("/tasks", getTasks).Methods("GET")
 	r.HandleFunc("/tasks/{id}", deleteTask).Methods("DELETE")
+	r.HandleFunc("/tasks/{id}", updateTask).Methods("PUT")
 	r.HandleFunc("/users", createUser).Methods("POST")
 	r.HandleFunc("/users", getUsers).Methods("GET")
-	r.HandleFunc("/login", loginUser).Methods("POST")
 	r.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
+	r.HandleFunc("/login", loginUser).Methods("POST")
 
 	fmt.Println("The server is running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func createTask(w http.ResponseWriter, r *http.Request) {
-	// Извлечение user_id из JWT токена
+	// Extracting user_id from JWT token
 	user_id, err := extractUserIDFromToken(r)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -78,7 +79,6 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 	db := connectDB()
 	defer db.Close()
 
-	// Добавление условия WHERE user_id = $1 для фильтрации задач по пользователю
 	rows, err := db.Query("SELECT id, title, description, status, user_id FROM tasks WHERE user_id = $1", user_id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -101,23 +101,46 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	// Получаем идентификатор задачи из URL
+	// Getting the task ID from the URL
 	params := mux.Vars(r)
 	taskID := params["id"]
 
-	// Устанавливаем подключение к базе данных
 	db := connectDB()
 	defer db.Close()
 
-	// Выполняем SQL запрос на удаление задачи по идентификатору
 	_, err := db.Exec("DELETE FROM tasks WHERE id = $1", taskID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Отправляем статус HTTP 204 No Content, как подтверждение успешного удаления
+	// Send HTTP 204 No Content status as confirmation of successful deletion
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func updateTask(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	taskID := params["id"]
+
+	var updatedTask Task
+	err := json.NewDecoder(r.Body).Decode(&updatedTask)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	db := connectDB()
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE tasks SET title = $1, description = $2, status = $3 WHERE id = $4",
+		updatedTask.Title, updatedTask.Description, updatedTask.Status, taskID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(updatedTask)
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
@@ -145,7 +168,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newUser.ID = id
-	newUser.Password = "" // Не возвращаем пароль
+	newUser.Password = "" // We do not return the password
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
@@ -216,14 +239,14 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	// Извлечение user_id из пути запроса
+	// Extracting user_id from request path
 	params := mux.Vars(r)
 	userID := params["id"]
 
 	db := connectDB()
 	defer db.Close()
 
-	// Выполнение SQL запроса на удаление пользователя
+	// Executing an SQL query to delete a user
 	_, err := db.Exec("DELETE FROM users WHERE id = $1", userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -237,7 +260,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 func generateJWT(userID int) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
-	// Создание утверждений JWT
+	// Creating JWT Claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = userID
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
@@ -251,13 +274,13 @@ func generateJWT(userID int) (string, error) {
 }
 
 func extractUserIDFromToken(r *http.Request) (int, error) {
-	// Получение токена из заголовка Authorization
+	// Getting a token from the Authorization header
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		return 0, fmt.Errorf("Authorization header is missing")
 	}
 
-	// Проверка формата заголовка
+	// Checking Header Format
 	bearerToken := strings.Split(authHeader, " ")
 	if len(bearerToken) != 2 || bearerToken[0] != "Bearer" {
 		return 0, fmt.Errorf("Authorization header format must be Bearer {token}")
@@ -265,13 +288,13 @@ func extractUserIDFromToken(r *http.Request) (int, error) {
 
 	tokenString := bearerToken[1]
 
-	// Получение секретного ключа из переменной окружения
+	// Getting the secret key from an environment variable
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	if secretKey == "" {
 		log.Fatal("JWT_SECRET_KEY is not set in the environment variables")
 	}
 
-	// Парсинг и валидация токена
+	// Token parsing and validation
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil
 	})
@@ -280,7 +303,7 @@ func extractUserIDFromToken(r *http.Request) (int, error) {
 		return 0, fmt.Errorf("Invalid token: %v", err)
 	}
 
-	// Извлечение и возврат user_id из токена
+	// Retrieving and returning user_id from a token
 	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
 		return claims.UserID, nil
 	} else {

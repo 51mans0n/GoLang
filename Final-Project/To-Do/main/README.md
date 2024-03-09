@@ -46,6 +46,10 @@ API endpoints:
     DELETE /tasks/{id} — deleting a task by ID (requires a JWT token in the Authorization header).
 	PUT /tasks/{id} — updating a task by ID (requires a JWT token in the Authorization header). 
 
+### Database structure
+
+![Database structure](https://i.imgur.com/PsZrSTZ.png)
+
 ### Example requests:
   Creating a new user:
   ```

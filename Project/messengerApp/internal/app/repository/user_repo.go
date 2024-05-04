@@ -47,3 +47,19 @@ func (r *userRepository) Create(user *models.User) error {
 	}
 	return nil
 }
+
+func (r *userRepository) AddRole(userID int, role string) error {
+	roleIDQuery := "SELECT id FROM roles WHERE name = $1"
+	var roleID int
+	err := r.db.QueryRow(roleIDQuery, role).Scan(&roleID)
+	if err != nil {
+		return err
+	}
+
+	query := "INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)"
+	_, err = r.db.Exec(query, userID, roleID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

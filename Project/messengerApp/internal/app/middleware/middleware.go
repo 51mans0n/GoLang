@@ -45,9 +45,15 @@ func AdminAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Checking if a user is an administrator
-		userObj := user.(*models.User)
-		if !userObj.IsAdmin() {
+		isAdmin := false
+		for _, role := range user.(*models.User).Roles {
+			if role.Name == "admin" {
+				isAdmin = true
+				break
+			}
+		}
+
+		if !isAdmin {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
 			c.Abort()
 			return

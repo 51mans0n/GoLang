@@ -17,7 +17,7 @@ func NewProfileHandler(profileService service.ProfileService) *ProfileHandler {
 }
 
 func (h *ProfileHandler) GetProfile(c *gin.Context) {
-	userID := c.Param("userID") // Assuming you're passing the userID in the URL path
+	userID := c.Param("userID")
 
 	// Convert userID to an integer
 	userIDInt, err := strconv.Atoi(userID)

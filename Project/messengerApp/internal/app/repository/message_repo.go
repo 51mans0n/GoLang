@@ -72,17 +72,17 @@ func (r *messageRepository) GetMessagesWithFilters(limit, offset int, sortBy, so
 	query := "SELECT * FROM messages WHERE 1=1"
 	args := []interface{}{}
 
-	// Добавляем фильтрацию по sender_id
+	// Add filtering by sender_id
 	if senderID, ok := filters["sender_id"].(string); ok && senderID != "" {
 		query += " AND sender_id = $1"
 		args = append(args, senderID)
 	}
 
-	// Добавление сортировки и пагинации
+	// Adding sorting and pagination
 	query += fmt.Sprintf(" ORDER BY %s %s LIMIT $%d OFFSET $%d", sortBy, sortDir, len(args)+1, len(args)+2)
 	args = append(args, limit, offset)
 
-	// Запрос к базе данных и обработка результатов
+	// Querying the database and processing the results
 	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, err

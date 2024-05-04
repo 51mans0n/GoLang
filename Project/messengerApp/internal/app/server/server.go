@@ -43,11 +43,10 @@ func (s *Server) setupRoutes() {
 	messageHandler := handlers.NewMessageHandler(s.messageService)
 	authMiddleware := middleware.NewAuthMiddleware(s.authService.UserRepo())
 
-	// Маршруты, которые не требуют аутентификации
+	// Routes that do not require authentication
 	s.router.POST("/login", authHandler.Login)
 	s.router.POST("/register", authHandler.Register)
 
-	// Создание группы маршрутов с мидлваром
 	authenticated := s.router.Group("/")
 	authenticated.Use(authMiddleware)
 	{
@@ -58,7 +57,6 @@ func (s *Server) setupRoutes() {
 			adminRoutes.GET("/messages", messageHandler.GetMessages)
 		}
 
-		// Маршруты, требующие аутентификации
 		authenticated.POST("/add-friend", friendHandler.AddFriend)
 		authenticated.POST("/send-message", messageHandler.SendMessage)
 	}

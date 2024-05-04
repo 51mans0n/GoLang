@@ -13,7 +13,7 @@ import (
 func NewAuthMiddleware(userRepo repository.UserRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
-		// Обрезать префикс "Bearer " для корректного чтения токена
+		// Trim the "Bearer" prefix to read the token correctly
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
 		userID, err := utils.ParseToken(tokenString)
@@ -23,7 +23,7 @@ func NewAuthMiddleware(userRepo repository.UserRepository) gin.HandlerFunc {
 			return
 		}
 
-		// Извлечение пользователя из базы данных по ID
+		// Retrieving a user from a database by ID
 		user, err := userRepo.FindByID(userID)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
@@ -31,7 +31,6 @@ func NewAuthMiddleware(userRepo repository.UserRepository) gin.HandlerFunc {
 			return
 		}
 
-		// Сохраняем пользователя в контексте для дальнейшего использования
 		c.Set("user", user)
 		c.Next()
 	}
@@ -46,7 +45,7 @@ func AdminAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Проверка, является ли пользователь администратором
+		// Checking if a user is an administrator
 		userObj := user.(*models.User)
 		if !userObj.IsAdmin() {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})

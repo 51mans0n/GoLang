@@ -67,11 +67,11 @@ func (s *messageService) GetMessagesWithFilters(page, pageSize int, sortBy, sort
 		filter["sender_id"] = senderID
 	}
 
-	// Вызов репозитория с передачей всех параметров и обработка возможной ошибки
+	// Calling the repository with passing all parameters and handling a possible error
 	messages, err := s.messageRepo.GetMessagesWithFilters(pageSize, (page-1)*pageSize, sortBy, sortDir, filter)
 	if err != nil {
 		return nil, err // Убедитесь, что возвращаете ошибку
 	}
 
-	return messages, nil // Возвращайте сообщения и nil для ошибки, если все хорошо
+	return messages, nil
 }

@@ -34,7 +34,7 @@ func GenerateToken(userID int) (string, error) {
 	return tokenString, nil
 }
 
-// ParseToken разбирает JWT токен и извлекает из него UserID
+// ParseToken parses the JWT token and extracts the UserID from it
 func ParseToken(tokenStr string) (int, error) {
 	tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
 

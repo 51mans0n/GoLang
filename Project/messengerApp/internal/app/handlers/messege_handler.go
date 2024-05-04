@@ -44,13 +44,13 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 		return
 	}
 
-	// Проверка, не пытается ли пользователь отправить сообщение самому себе
+	// Checking if the user is trying to send a message to himself
 	if senderIDInt == req.ReceiverID {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot send message to self"})
 		return
 	}
 
-	// Вызов сервиса для отправки сообщения
+	// Calling a service to send a message
 	if err := h.messageService.SendMessage(senderIDInt, req.ReceiverID, req.Message); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send message"})
 		return
@@ -60,12 +60,11 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 }
 
 func (h *MessageHandler) GetMessages(c *gin.Context) {
-	// Получаем параметры из запроса
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	sortBy := c.DefaultQuery("sortBy", "timestamp") // По какому полю сортируем
-	sortDir := c.DefaultQuery("sortDir", "desc")    // Направление сортировки: asc или desc
-	senderID := c.Query("sender_id")                // Получаем sender_id для фильтрации
+	sortBy := c.DefaultQuery("sortBy", "timestamp")
+	sortDir := c.DefaultQuery("sortDir", "desc")
+	senderID := c.Query("sender_id")
 
 	messages, err := h.messageService.GetMessagesWithFilters(page, pageSize, sortBy, sortDir, senderID)
 	if err != nil {
@@ -75,5 +74,3 @@ func (h *MessageHandler) GetMessages(c *gin.Context) {
 
 	c.JSON(http.StatusOK, messages)
 }
-
-// Implement other methods as needed

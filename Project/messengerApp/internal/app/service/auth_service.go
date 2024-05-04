@@ -1,7 +1,7 @@
 package service
 
 import (
-	"database/sql" // Добавьте если его нет
+	"database/sql"
 	"errors"
 	"log"
 	"messengerApp/internal/app/models"
@@ -18,7 +18,7 @@ type AuthService interface {
 
 type authService struct {
 	userRepo repository.UserRepository
-	db       *sql.DB // Добавить соединение с базой данных
+	db       *sql.DB
 }
 
 type LoginRequest struct {
@@ -35,12 +35,12 @@ func (s *authService) UserRepo() repository.UserRepository {
 	return s.userRepo
 }
 
-// NewAuthService создает новый экземпляр AuthService
-func NewAuthService(userRepo repository.UserRepository, db *sql.DB) AuthService { // Изменено для принятия базы данных
+// NewAuthService creates a new AuthService instance
+func NewAuthService(userRepo repository.UserRepository, db *sql.DB) AuthService {
 	return &authService{userRepo: userRepo, db: db}
 }
 
-// Login обрабатывает логин пользователя
+// Login handles user login
 func (s *authService) Login(username, password string) (string, error) {
 	user, err := s.userRepo.FindByUsername(username)
 	if err != nil {
@@ -51,7 +51,7 @@ func (s *authService) Login(username, password string) (string, error) {
 		return "", errors.New("invalid credentials")
 	}
 
-	// Генерация токена для пользователя
+	// Generating a token for the user
 	token, err := utils.GenerateToken(user.ID)
 	if err != nil {
 		return "", err
@@ -60,13 +60,13 @@ func (s *authService) Login(username, password string) (string, error) {
 	return token, nil
 }
 
-// Register регистрирует нового пользователя
+// Register registers a new user
 func (s *authService) Register(username, password string) error {
 	user := &models.User{Username: username, Password: password}
 	return s.userRepo.Create(user)
 }
 
-// RegisterUser регистрирует пользователя и возвращает объект пользователя
+// RegisterUser registers a user and returns a user object
 func (s *authService) RegisterUser(username, password string) (*models.User, error) {
 	user := &models.User{Username: username, Password: password}
 	if err := s.userRepo.Create(user); err != nil {
@@ -75,7 +75,7 @@ func (s *authService) RegisterUser(username, password string) (*models.User, err
 	return user, nil
 }
 
-// loadUserRoles загружает роли пользователя из базы данных
+// loadUserRoles loads user roles from the database
 func (s *authService) loadUserRoles(userID int) []string {
 	var roles []string
 	rows, err := s.db.Query("SELECT r.name FROM roles r JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = $1", userID)

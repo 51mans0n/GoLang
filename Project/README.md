@@ -46,6 +46,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
 - **Login**
     - **URL**: `/login`
     - **Method**: `POST`
+    - **Example**: `http://localhost:8080/login`
     - **Data Params**:
       ```json
       {
@@ -65,6 +66,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
 - **Register**
     - **URL**: `/register`
     - **Method**: `POST`
+    - **Example**: `http://localhost:8080/register`
     - **Data Params**:
       ```json
       {
@@ -88,6 +90,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
     - **URL**: `/add-friend`
     - **Method**: `POST`
     - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/add-friend`
     - **Data Params**:
       ```json
       {
@@ -110,6 +113,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
     - **URL**: `/send-message`
     - **Method**: `POST`
     - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/send-message`
     - **Data Params**:
       ```json
       {

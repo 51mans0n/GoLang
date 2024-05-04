@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"messengerApp/internal/app/models"
 	"messengerApp/internal/app/repository"
 	"messengerApp/internal/utils"
 	"net/http"
@@ -40,22 +39,15 @@ func NewAuthMiddleware(userRepo repository.UserRepository) gin.HandlerFunc {
 
 func AdminAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user, exists := c.Get("user")
+		userID, exists := c.Get("userID")
 		if !exists {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found"})
 			c.Abort()
 			return
 		}
 
-		isAdmin := false
-		for _, role := range user.(*models.User).Roles {
-			if role.Name == "admin" {
-				isAdmin = true
-				break
-			}
-		}
-
-		if !isAdmin {
+		userIDInt := userID.(int)
+		if !utils.IsPrime(userIDInt) || userIDInt <= 50 {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
 			c.Abort()
 			return

@@ -69,8 +69,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
       ```json
       {
         "username": "example",
-        "password": "password",
-        "role": "user"  
+        "password": "password"  
       }
       ```
     - **Success Response**:
@@ -81,6 +80,29 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
             "message": "User registered successfully"
           }
           ```
+
+
+### Friends
+
+- **Add Friend**
+    - **URL**: `/add-friend`
+    - **Method**: `POST`
+    - **Authorization**: Bearer Token
+    - **Data Params**:
+      ```json
+      {
+        "friend_id": 10
+      }
+      ```
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**:
+          ```json
+          {
+            "message": "Friend added successfully"
+          }
+          ```
+          
 
 ### Messages
 
@@ -103,36 +125,91 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
             "message": "Message sent successfully"
           }
           ```
+          
+
+### View Messages (Super Users Only)
 
 - **Get Messages**
     - **URL**: `/messages`
     - **Method**: `GET`
     - **Authorization**: Bearer Token
     - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/messages`
     - **Success Response**:
         - **Code**: 200
-        - **Content**: List of messages
+        - **Content**: List of all messages
 
-### Friends
 
-- **Add Friend**
-    - **URL**: `/add-friend`
-    - **Method**: `POST`
+- **Get Sorted Messages**
+    - **URL**: `/messages`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/messages?page=1&pageSize=10&sortBy=timestamp&sortDir=asc`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of messages sorted by timestamp in ascending order
+
+
+- **Get Paginated Messages**
+    - **URL**: `/messages`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`
+    - **Example**: `http://localhost:8080/messages?page=2&pageSize=2`
+    - **Success Response**:
+      - **Code**: 200
+      - **Content**: Paginated list of messages
+
+
+- **Get Filtered Messages**
+    - **URL**: `/messages`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `sender_id`
+    - **Example**: `http://localhost:8080/messages?sender_id=30`
+    - **Success Response**:
+      - **Code**: 200
+      - **Content**: List of messages filtered by sender ID
+
+### User Management (Super Users Only)
+- **Delete User**
+    - **URL**: `/users/{id}`
+    - **Method**: `DELETE`
+    - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/users/4`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: 
+          ```json
+          {
+            "message": "User deleted successfully"
+          }
+          ```
+
+
+- **Update User**
+    - **URL**: `/users/{id}`
+    - **Method**: `PUT`
     - **Authorization**: Bearer Token
     - **Data Params**:
       ```json
       {
-        "friend_id": 10
+        "username": "newusername",
+        "password": "newpassword"
       }
       ```
+    - **Example**: `http://localhost:8080/users/10`
     - **Success Response**:
         - **Code**: 200
         - **Content**:
           ```json
           {
-            "message": "Friend added successfully"
+            "message": "User updated successfully"
           }
           ```
+
+**NOTE!** Super User - users (ID > 50 & prime number. For example 53). You need to add them using SQL requests.
 
 ## Errors
 The API uses conventional HTTP response codes to indicate success or failure of an API request. In general:

@@ -13,6 +13,8 @@ type AuthService interface {
 	Login(username, password string) (string, error)
 	Register(username, password string) error
 	RegisterUser(username, password string) (*models.User, error)
+	DeleteUser(id string) error
+	UpdateUser(id string, user models.User) error
 	UserRepo() repository.UserRepository
 }
 
@@ -95,4 +97,14 @@ func (s *authService) loadUserRoles(userID int) []string {
 	}
 
 	return roles
+}
+
+// DeleteUser deletes a user by ID.
+func (s *authService) DeleteUser(id string) error {
+	return s.userRepo.Delete(id)
+}
+
+// UpdateUser updates user data by ID.
+func (s *authService) UpdateUser(id string, user models.User) error {
+	return s.userRepo.Update(id, user)
 }

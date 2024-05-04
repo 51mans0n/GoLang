@@ -42,6 +42,7 @@ func (s *Server) setupRoutes() {
 	friendHandler := handlers.NewFriendHandler(s.friendService)
 	messageHandler := handlers.NewMessageHandler(s.messageService)
 	authMiddleware := middleware.NewAuthMiddleware(s.authService.UserRepo())
+	adminMiddleware := middleware.AdminAuthMiddleware()
 
 	// Routes that do not require authentication
 	s.router.POST("/login", authHandler.Login)
@@ -51,10 +52,11 @@ func (s *Server) setupRoutes() {
 	authenticated.Use(authMiddleware)
 	{
 		adminRoutes := authenticated.Group("/")
-		adminRoutes.Use(middleware.AdminAuthMiddleware())
-
+		adminRoutes.Use(adminMiddleware)
 		{
 			adminRoutes.GET("/messages", messageHandler.GetMessages)
+			adminRoutes.DELETE("/users/:id", authHandler.DeleteUser)
+			adminRoutes.PUT("/users/:id", authHandler.UpdateUser)
 		}
 
 		authenticated.POST("/add-friend", friendHandler.AddFriend)

@@ -92,3 +92,24 @@ func (h *FriendHandler) SendMessage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Message sent successfully"})
 }
+func (h *FriendHandler) GetFriends(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID not found"})
+		return
+	}
+
+	userIDInt, ok := userID.(int)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "User ID is invalid"})
+		return
+	}
+
+	friends, err := h.friendService.GetFriends(userIDInt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get friends"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"friends": friends})
+}

@@ -57,6 +57,7 @@ func (s *Server) setupRoutes() {
 			adminRoutes.GET("/messages", messageHandler.GetMessages)
 			adminRoutes.DELETE("/users/:id", authHandler.DeleteUser)
 			adminRoutes.PUT("/users/:id", authHandler.UpdateUser)
+			authenticated.GET("/friends", friendHandler.GetFriends)
 		}
 
 		authenticated.POST("/add-friend", friendHandler.AddFriend)

@@ -12,6 +12,8 @@ type FriendService interface {
 	AddFriend(userID, friendID int) error
 	GetFriends(userID int) ([]*models.User, error)
 	SendMessage(senderID, receiverID int, message string) error
+	GetFriendsWithPagination(page, pageSize int, sortBy, sortDir string) ([]*models.User, error)
+	GetFriendsWithFilters(page, pageSize int, sortBy, sortDir, filter string) ([]*models.User, error)
 }
 
 type friendService struct {
@@ -66,38 +68,18 @@ func (s *friendService) friendExists(userID, friendID int) (bool, error) {
 	return exists, nil
 }
 
-func (s *friendService) GetFriends(userID int) ([]*models.User, error) {
-	var friends []*models.User
-
-	rows, err := s.db.Query(`
-        SELECT u.id, u.username 
-        FROM users u
-        JOIN friends f ON f.friend_id = u.id
-        WHERE f.user_id = $1`, userID)
-	if err != nil {
-		log.Printf("Error retrieving friends: %v", err)
-		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var user models.User
-		if err := rows.Scan(&user.ID, &user.Username); err != nil {
-			log.Printf("Error scanning friend: %v", err)
-			continue
-		}
-		friends = append(friends, &user)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Printf("Error during rows iteration: %v", err)
-		return nil, err
-	}
-
-	return friends, nil
-}
-
 func (s *friendService) SendMessage(senderID, receiverID int, message string) error {
 	// Simulate sending message by returning nil
 	return nil
+}
+func (s *friendService) GetFriendsWithPagination(page, pageSize int, sortBy, sortDir string) ([]*models.User, error) {
+	offset := (page - 1) * pageSize
+	return s.friendRepo.GetFriendsWithPagination(pageSize, offset, sortBy, sortDir)
+}
+
+func (s *friendService) GetFriendsWithFilters(page, pageSize int, sortBy, sortDir, filter string) ([]*models.User, error) {
+	return s.friendRepo.GetFriendsWithFilters(page, pageSize, sortBy, sortDir, filter)
+}
+func (s *friendService) GetFriends(userID int) ([]*models.User, error) {
+	return s.friendRepo.GetFriends(userID)
 }

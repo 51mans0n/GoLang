@@ -105,7 +105,52 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
             "message": "Friend added successfully"
           }
           ```
-          
+
+### View Friends list (Super Users Only)
+
+- **Get Friends list**
+    - **URL**: `/friends`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/messages`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of all friends
+
+
+- **Get Sorted Friends list**
+    - **URL**: `/friends`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/friends?page=1&pageSize=10&sortBy=username&sortDir=asc`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of friends sorted by username in ascending order
+
+
+- **Get Paginated Friends list**
+    - **URL**: `/friends`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`
+    - **Example**: `http://localhost:8080/friends?page=2&pageSize=2`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: Paginated list of friends
+
+
+- **Get Filtered Friends list**
+    - **URL**: `/friends`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `user_id`
+    - **Example**: `http://localhost:8080/friends?user_id=30`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of friends filtered by sender ID
+
 
 ### Messages
 

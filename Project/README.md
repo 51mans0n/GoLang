@@ -1,7 +1,7 @@
 # MessengerApp API Documentation
 
 ## Overview
-MessengerApp - is a messaging API that allows users to register, log in, send messages, add friends, and view messages with various filtering and sorting options.
+MessengerApp - is a messaging API that allows users to register, log in, send messages, add friends, create profiles and view messages/profiles/friends with various filtering and sorting options.
 
 ## Creators
 - Skorokhod Maxim Andreevich 22B030614
@@ -82,6 +82,104 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
             "message": "User registered successfully"
           }
           ```
+          
+### Profile Management (Super Users Only)
+
+- **Create Profile**
+    - **URL**: `/profiles/{id}`
+    - **Method**: `POST`
+    - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/profiles/1`
+    - **Data Params**:
+      ```json
+        {
+          "name": "John",
+          "surname": "Doe"
+        }
+      ```
+        - **Success Response**:
+            - **Code**: 201
+            - **Content**:
+              ```json
+              {
+                "message": "Profile created successfully"
+              }
+              ```
+
+- **Update Profile**
+    - **URL**: `/profiles/{id}`
+    - **Method**: `PUT`
+    - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/profiles/1`
+    - **Data Params**:
+      ```json
+        {
+          "name": "Nikita",
+          "surname": "Afanasyev"
+        }
+      ```
+        - **Success Response**:
+            - **Code**: 200
+            - **Content**:
+              ```json
+              {
+                "message": "Profile updated successfully"
+              }
+              ```
+              
+### View Profiles list (Super Users Only)
+
+- **Get Profiles list**
+    - **URL**: `/profiles`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/profiles`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of all profiles
+
+- **Get Profile by ID**
+    - **URL**: `/profiles/{id}`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/profiles/1`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: View user's(ID 1) profile 
+
+
+- **Get Sorted Profiles list**
+    - **URL**: `/profiles`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
+    - **Example**: `http://localhost:8080/profiles?sortBy=name&sortDir=desc`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: List of profiles sorted by name in descending order
+
+
+- **Get Paginated Profiles list**
+    - **URL**: `/profiles`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Query Params**: `page`, `pageSize`
+    - **Example**: `http://localhost:8080/profiles?page=1&pageSize=10`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: Get the first page with 10 profiles.
+
+
+- **Get Filtered Profiles list**
+    - **URL**: `/profiles`
+    - **Method**: `GET`
+    - **Authorization**: Bearer Token
+    - **Example**: `http://localhost:8080/profiles?filter=Smith`
+    - **Success Response**:
+        - **Code**: 200
+        - **Content**: Get all profiles where the name or surname contains "Smith".
 
 
 ### Friends
@@ -263,6 +361,13 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
 ## Errors
 The API uses conventional HTTP response codes to indicate success or failure of an API request. In general:
 - 200 OK - Everything worked as expected.
+- 201 Created - The resource was successfully created.
+- 204 No Content - The request was successful but there is no content to send in the response.
 - 400 Bad Request - The request was unacceptable.
 - 401 Unauthorized - The request lacks valid authentication credentials.
+- 403 Forbidden - The client does not have access rights to the content.
+- 404 Not Found - The requested resource does not exist.
+- 409 Conflict - The request could not be completed due to a conflict with the current state of the resource.
+- 422 Unprocessable Entity - The request was well-formed but was unable to be followed due to semantic errors.
 - 500 Internal Server Error - Something went wrong on our end.
+- 503 Service Unavailable - The server is not ready to handle the request, often due to temporary overloading or maintenance.

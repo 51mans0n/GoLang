@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"messengerApp/cmd/config"
+	"messengerApp/internal/app/handlers"
 	"messengerApp/internal/app/repository"
 	"messengerApp/internal/app/server"
 	"messengerApp/internal/app/service"
@@ -44,7 +45,11 @@ func main() {
 	messageRepo := repository.NewMessageRepository(sqlDB)
 	messageService := service.NewMessageService(sqlDB, userRepo, friendRepo, messageRepo)
 
+	profileRepo := repository.NewProfileRepository(sqlDB)
+	profileService := service.NewProfileService(profileRepo)
+	profileHandler := handlers.NewProfileHandler(profileService)
+
 	// Start the HTTP server
-	srv := server.NewServer(serverConfig, authService, friendService, messageService)
+	srv := server.NewServer(serverConfig, authService, friendService, messageService, profileHandler)
 	srv.Run()
 }

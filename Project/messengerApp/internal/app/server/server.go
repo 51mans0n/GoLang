@@ -15,9 +15,10 @@ type Server struct {
 	authService    service.AuthService
 	friendService  service.FriendService
 	messageService service.MessageService
+	profileHandler *handlers.ProfileHandler
 }
 
-func NewServer(config *config.ServerConfig, authService service.AuthService, friendService service.FriendService, messageService service.MessageService) *Server {
+func NewServer(config *config.ServerConfig, authService service.AuthService, friendService service.FriendService, messageService service.MessageService, profileHandler *handlers.ProfileHandler) *Server {
 	router := gin.Default()
 	server := &Server{
 		router:         router,
@@ -25,6 +26,7 @@ func NewServer(config *config.ServerConfig, authService service.AuthService, fri
 		authService:    authService,
 		friendService:  friendService,
 		messageService: messageService,
+		profileHandler: profileHandler,
 	}
 	server.setupRoutes()
 	return server
@@ -57,9 +59,12 @@ func (s *Server) setupRoutes() {
 			adminRoutes.GET("/messages", messageHandler.GetMessages)
 			adminRoutes.DELETE("/users/:id", authHandler.DeleteUser)
 			adminRoutes.PUT("/users/:id", authHandler.UpdateUser)
-			authenticated.GET("/friends", friendHandler.GetFriends)
+			adminRoutes.GET("/friends", friendHandler.GetFriends)
+			adminRoutes.GET("/profiles/:userID", s.profileHandler.GetProfile)
+			adminRoutes.PUT("/profiles/update-profile/:userID", s.profileHandler.UpdateProfile)
+			adminRoutes.POST("/profiles/create-profile/:userID", s.profileHandler.CreateProfile)
+			adminRoutes.GET("/profiles", s.profileHandler.GetProfiles)
 		}
-
 		authenticated.POST("/add-friend", friendHandler.AddFriend)
 		authenticated.POST("/send-message", messageHandler.SendMessage)
 	}

@@ -211,7 +211,7 @@ MessengerApp - is a messaging API that allows users to register, log in, send me
     - **Method**: `GET`
     - **Authorization**: Bearer Token
     - **Query Params**: `page`, `pageSize`, `sortBy`, `sortDir`
-    - **Example**: `http://localhost:8080/messages`
+    - **Example**: `http://localhost:8080/friends`
     - **Success Response**:
         - **Code**: 200
         - **Content**: List of all friends
